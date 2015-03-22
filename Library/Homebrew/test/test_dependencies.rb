@@ -44,12 +44,14 @@ class DependenciesTests < Homebrew::TestCase
     foo = Dependency.new("foo")
     bar = Dependency.new("bar", [:optional])
     baz = Dependency.new("baz", [:build])
+    tux = Dependency.new("tux", [:test])
     qux = Dependency.new("qux", [:recommended])
     quux = Dependency.new("quux")
     @deps << foo << bar << baz << qux << quux
     assert_equal [foo, quux], @deps.required
     assert_equal [bar], @deps.optional
     assert_equal [baz], @deps.build
+    assert_equal [tux], @deps.test
     assert_equal [qux], @deps.recommended
     assert_equal [foo, baz, quux, qux].sort_by(&:name), @deps.default.sort_by(&:name)
   end

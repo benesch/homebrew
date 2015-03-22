@@ -36,6 +36,10 @@ class Dependencies
     select(&:build?)
   end
 
+  def test
+    select(&:test?)
+  end
+
   def required
     select(&:required?)
   end

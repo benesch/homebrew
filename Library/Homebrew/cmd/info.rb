@@ -122,7 +122,7 @@ module Homebrew
 
     unless f.deps.empty?
       ohai "Dependencies"
-      %w{build required recommended optional}.map do |type|
+      %w{build required recommended optional test}.map do |type|
         deps = f.deps.send(type).uniq
         puts "#{type.capitalize}: #{decorate_dependencies deps}" unless deps.empty?
       end

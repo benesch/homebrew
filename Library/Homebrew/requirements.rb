@@ -28,10 +28,10 @@ class XcodeDependency < Requirement
     MacOS::Xcode.version >= @version
   end
 
-  def message
+  def message(action = "install")
     version = " #{@version}" if @version
     message = <<-EOS.undent
-      A full installation of Xcode.app#{version} is required to compile this software.
+      A full installation of Xcode.app#{version} is required to #{action} this software.
       Installing just the Command Line Tools is not sufficient.
     EOS
     if MacOS.version >= :lion
@@ -62,6 +62,14 @@ class PostgresqlDependency < Requirement
   default_formula 'postgresql'
 
   satisfy { which 'pg_config' }
+
+  def message(action = "install")
+    s = <<-EOS.undent
+      PostgreSQL is required for Homebrew to #{action} this formula.
+    EOS
+    s += super
+    s
+  end
 end
 
 class GPGDependency < Requirement
@@ -78,9 +86,9 @@ class TeXDependency < Requirement
 
   satisfy { which('tex') || which('latex') }
 
-  def message
+  def message(action = "install")
     s = <<-EOS.undent
-      A LaTeX distribution is required for Homebrew to install this formula.
+      A LaTeX distribution is required for Homebrew to #{action} this formula.
 
       Make sure that "/usr/texbin", or the location you installed it to, is in
       your PATH before proceeding.
@@ -105,7 +113,7 @@ class ArchRequirement < Requirement
     end
   end
 
-  def message
+  def message(action = "install")
     "This formula requires an #{@arch} architecture."
   end
 end

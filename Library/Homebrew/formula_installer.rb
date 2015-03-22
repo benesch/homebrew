@@ -29,7 +29,7 @@ class FormulaInstaller
   attr_accessor :options
   mode_attr_accessor :show_summary_heading, :show_header
   mode_attr_accessor :build_from_source, :build_bottle, :force_bottle
-  mode_attr_accessor :ignore_deps, :only_deps, :interactive, :git
+  mode_attr_accessor :ignore_deps, :only_deps, :test_deps, :interactive, :git
   mode_attr_accessor :verbose, :debug, :quieter
 
   def initialize(formula)
@@ -37,6 +37,7 @@ class FormulaInstaller
     @show_header = false
     @ignore_deps = false
     @only_deps = false
+    @test_deps = false
     @build_from_source = false
     @build_bottle = false
     @force_bottle = false
@@ -245,6 +246,8 @@ class FormulaInstaller
           Requirement.prune
         elsif req.build? && install_bottle_for?(dependent, build)
           Requirement.prune
+        elsif req.test? && !test_deps?
+          Requirement.prune
         elsif install_requirement_default_formula?(req, dependent, build)
           dep = req.to_dependency
           deps.unshift(dep)
@@ -274,6 +277,8 @@ class FormulaInstaller
       if (dep.optional? || dep.recommended?) && build.without?(dep)
         Dependency.prune
       elsif dep.build? && install_bottle_for?(dependent, build)
+        Dependency.prune
+      elsif dep.test? && !test_deps?
         Dependency.prune
       elsif dep.satisfied?(options)
         Dependency.skip

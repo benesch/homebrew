@@ -1,10 +1,14 @@
 require 'options'
 
 module Dependable
-  RESERVED_TAGS = [:build, :optional, :recommended, :run]
+  RESERVED_TAGS = [:build, :test, :optional, :recommended, :run]
 
   def build?
     tags.include? :build
+  end
+
+  def test?
+    tags.include? :test
   end
 
   def optional?
@@ -20,7 +24,7 @@ module Dependable
   end
 
   def required?
-    !build? && !optional? && !recommended?
+    !build? && !optional? && !recommended? && !test?
   end
 
   def options

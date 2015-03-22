@@ -13,6 +13,7 @@ class DependableTests < Homebrew::TestCase
 
   def test_interrogation
     assert_predicate @dep, :build?
+    refute_predicate @dep, :test?
     refute_predicate @dep, :optional?
     refute_predicate @dep, :recommended?
   end

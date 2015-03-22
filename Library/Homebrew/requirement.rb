@@ -9,12 +9,13 @@ require 'build_environment'
 class Requirement
   include Dependable
 
-  attr_reader :tags, :name, :cask, :download
+  attr_reader :tags, :name, :cask, :download, :default_formula
   alias_method :option_name, :name
 
   def initialize(tags=[])
     @cask ||= self.class.cask
     @download ||= self.class.download
+    @default_formula ||= self.class.default_formula
     tags.each do |tag|
       next unless tag.is_a? Hash
       @cask ||= tag[:cask]
@@ -26,8 +27,16 @@ class Requirement
   end
 
   # The message to show when the requirement is not met.
-  def message
+  def message(action = "install")
     s = ""
+    if default_formula
+      s += <<-EOS.undent
+
+        You can install with Homebrew:
+          brew install #{default_formula}
+      EOS
+    end
+
     if cask
       s +=  <<-EOS.undent
 

@@ -25,6 +25,23 @@ module Homebrew
         next
       end
 
+      f.requirements.to_a.delete_if(&:satisfied?).each do |req|
+        onoe req.message("test")
+        Homebrew.failed = true if req.fatal?
+      end
+
+      missing_test_deps = f.deps.test.delete_if { |d| d.satisfied?([]) }
+      if missing_test_deps.any?
+        ofail <<-EOS.undent
+          #{f.name} is missing test dependencies.
+
+          You can `brew install` these dependencies:
+              brew install #{missing_test_deps.sort_by(&:name) * " "}
+        EOS
+      end
+
+      next if Homebrew.failed
+
       puts "Testing #{f.name}"
 
       f.extend(Assertions)
